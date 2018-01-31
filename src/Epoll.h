@@ -10,6 +10,8 @@
 #include <vector>
 #include <mutex>
 
+#include "IEpollEventListener.h"
+
 typedef int uv_os_sock_t;
 static const int UV_READABLE = EPOLLIN;
 static const int UV_WRITABLE = EPOLLOUT;
@@ -123,8 +125,10 @@ struct Timer {
 };
 
 // 4 bytes
-struct Poll {
+class Poll : public maple::IEpollEventListener {
 protected:
+    // add by dantezhu
+    virtual ~Poll() {}
     struct {
         int fd : 28;
         unsigned int cbIndex : 4;
@@ -208,11 +212,17 @@ public:
         return state.fd;
     }
 
+    void onEpollEvent(const struct epoll_event &event) {
+        // TODO
+    }
+
     friend struct Loop;
 };
 
 // this should be put in the Loop as a general "post" function always available
 struct Async : Poll {
+    // add by dantezhu
+    virtual ~Async() {}
     void (*cb)(Async *);
     Loop *loop;
     void *data;
