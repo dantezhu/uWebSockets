@@ -32,9 +32,13 @@ void Loop::run() {
         }
 
         for (int i = 0; i < numFdReady; i++) {
-            Poll *poll = (Poll *) readyEvents[i].data.ptr;
-            int status = -bool(readyEvents[i].events & EPOLLERR);
-            callbacks[poll->state.cbIndex](poll, status, readyEvents[i].events);
+            // add by dantezhu
+            maple::IEpollEventListener *listener = (maple::IEpollEventListener *) readyEvents[i].data.ptr;
+            listener->onEpollEvent(readyEvents[i]);
+
+            // Poll *poll = (Poll *) readyEvents[i].data.ptr;
+            // int status = -bool(readyEvents[i].events & EPOLLERR);
+            // callbacks[poll->state.cbIndex](poll, status, readyEvents[i].events);
         }
 
         while (timers.size() && timers[0].timepoint < timepoint) {

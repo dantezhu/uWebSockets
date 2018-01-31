@@ -216,6 +216,8 @@ public:
 
     void onEpollEvent(const struct epoll_event &event) {
         // TODO
+        int status = -bool(event.events & EPOLLERR);
+        callbacks[this->state.cbIndex](this, status, event.events);
     }
 
     friend struct Loop;
