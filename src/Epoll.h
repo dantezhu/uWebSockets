@@ -125,14 +125,16 @@ struct Timer {
 };
 
 // 4 bytes
+// add by dantezhu
 class Poll : public maple::IEpollEventListener {
 protected:
-    // add by dantezhu
-    virtual ~Poll() {}
     struct {
         int fd : 28;
         unsigned int cbIndex : 4;
     } state = {-1, 0};
+
+    // add by dantezhu
+    virtual ~Poll() {}
 
     Poll(Loop *loop, uv_os_sock_t fd) {
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
