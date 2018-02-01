@@ -60,6 +60,8 @@ void Loop::run() {
     }
 }
 
+
+// by dantezhu
 void Loop::onHandleEpollEventsBegin() {
     timepoint = std::chrono::system_clock::now();
     if (preCb) {
@@ -67,6 +69,7 @@ void Loop::onHandleEpollEventsBegin() {
     }
 }
 
+// by dantezhu
 void Loop::onHandleEpollEventsEnd() {
     while (timers.size() && timers[0].timepoint < timepoint) {
         Timer *timer = timers[0].timer;

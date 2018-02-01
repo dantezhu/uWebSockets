@@ -66,8 +66,10 @@ struct Loop {
         return epfd;
     }
 
+    // by dantezhu
     void onHandleEpollEventsBegin();
 
+    // by dantezhu
     void onHandleEpollEventsEnd();
 };
 
@@ -218,8 +220,8 @@ public:
         return state.fd;
     }
 
+    // by dantezhu
     void onEpollEvent(const struct epoll_event &event) {
-        // TODO
         int status = -bool(event.events & EPOLLERR);
         callbacks[this->state.cbIndex](this, status, event.events);
     }
