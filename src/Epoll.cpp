@@ -32,13 +32,9 @@ void Loop::run() {
         }
 
         for (int i = 0; i < numFdReady; i++) {
-            // add by dantezhu
-            maple::IEpollEventListener *listener = (maple::IEpollEventListener *) readyEvents[i].data.ptr;
-            listener->onEpollEvent(readyEvents[i]);
-
-            // Poll *poll = (Poll *) readyEvents[i].data.ptr;
-            // int status = -bool(readyEvents[i].events & EPOLLERR);
-            // callbacks[poll->state.cbIndex](poll, status, readyEvents[i].events);
+            Poll *poll = (Poll *) readyEvents[i].data.ptr;
+            int status = -bool(readyEvents[i].events & EPOLLERR);
+            callbacks[poll->state.cbIndex](poll, status, readyEvents[i].events);
         }
 
         while (timers.size() && timers[0].timepoint < timepoint) {
@@ -62,6 +58,48 @@ void Loop::run() {
             postCb(postCbData);
         }
     }
+}
+
+void Loop::onHandleEpollEventsBegin() {
+    timepoint = std::chrono::system_clock::now();
+    if (preCb) {
+        preCb(preCbData);
+    }
+}
+
+void Loop::onHandleEpollEventsEnd() {
+    while (timers.size() && timers[0].timepoint < timepoint) {
+        Timer *timer = timers[0].timer;
+        cancelledLastTimer = false;
+        timers[0].cb(timers[0].timer);
+
+        if (cancelledLastTimer) {
+            continue;
+        }
+
+        int repeat = timers[0].nextDelay;
+        auto cb = timers[0].cb;
+        timers.erase(timers.begin());
+        if (repeat) {
+            timer->start(cb, repeat, repeat);
+        }
+    }
+
+    if (postCb) {
+        postCb(postCbData);
+    }
+
+    for (std::pair<Poll *, void (*)(Poll *)> c : closing) {
+        numPolls--;
+
+        c.second(c.first);
+
+        if (!numPolls) {
+            closing.clear();
+            return;
+        }
+    }
+    closing.clear();
 }
 
 }

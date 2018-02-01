@@ -65,6 +65,10 @@ struct Loop {
     int getEpollFd() {
         return epfd;
     }
+
+    void onHandleEpollEventsBegin();
+
+    void onHandleEpollEventsEnd();
 };
 
 struct Timer {
