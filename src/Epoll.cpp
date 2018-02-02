@@ -11,6 +11,9 @@ int cbHead = 0;
 
 void Loop::run() {
     timepoint = std::chrono::system_clock::now();
+    // by dantezhu
+    // 直接返回
+    return;
     while (numPolls) {
         for (std::pair<Poll *, void (*)(Poll *)> c : closing) {
             numPolls--;
