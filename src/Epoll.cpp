@@ -11,7 +11,7 @@ int cbHead = 0;
 
 void Loop::run() {
     timepoint = std::chrono::system_clock::now();
-    // by dantezhu
+    // add by dantezhu
     // 直接返回
     return;
     while (numPolls) {
@@ -64,7 +64,7 @@ void Loop::run() {
 }
 
 
-// by dantezhu
+// add by dantezhu
 void Loop::onHandleEpollEventsBegin() {
     timepoint = std::chrono::system_clock::now();
     if (preCb) {
@@ -72,7 +72,7 @@ void Loop::onHandleEpollEventsBegin() {
     }
 }
 
-// by dantezhu
+// add by dantezhu
 void Loop::onHandleEpollEventsEnd() {
     while (timers.size() && timers[0].timepoint < timepoint) {
         Timer *timer = timers[0].timer;
