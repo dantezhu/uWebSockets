@@ -68,10 +68,10 @@ struct Loop {
     }
 
     // add by dantezhu
-    void onHandleEpollEventsBegin();
+    void onEpollEventsBegin();
 
     // add by dantezhu
-    void onHandleEpollEventsEnd();
+    void onEpollEventsEnd();
 };
 
 struct Timer {
